@@ -1,7 +1,7 @@
 # ----- PROJECT INFO -----
 
 PROJ_NAME := libver
-VER := 1.0
+VER := 1.1
 
 # ----- COMPILER CONFIGURATION -----
 

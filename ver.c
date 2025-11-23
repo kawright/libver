@@ -10,6 +10,13 @@
 
 #include <string.h>
 
+Void dflt_ver(Ver *ver) {
+    strcpy(ver->ver_no, "1.0");
+    ver->build_no = 1;
+    touch_ver_date(ver);
+    touch_ver_build_date(ver); 
+}
+
 Void init_ver(Ver *ver) {
     ver->ver_no[0]          = '\0';
     ver->ver_date[0]        = '\0';

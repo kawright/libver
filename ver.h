@@ -29,10 +29,14 @@ typedef struct STRUCT_VER {
     Ch      build_date[VER_DATE_BUF_SZ];
 } Ver;
 
+/* Set a 'Ver' to default values (not the init values, but those that are
+assigned when a new '.ver' file is create). */
+Void dflt_ver(Ver *ver);
+
 /* Initialize a 'Ver' */
 Void init_ver(Ver *ver);
 
-/* Load a 'Ver' from a '.ver' file. Throws IO, MEM, DATA. */
+/* Load a 'Ver' from a '.ver' file. Throws IO, DATA. */
 Void ld_ver_from_file(Ver *ver, Ch *path, Err *err);
 
 /* Set the 'ver_no' field of a 'Ver'. */
