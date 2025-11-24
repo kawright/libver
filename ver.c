@@ -24,10 +24,6 @@ Void init_ver(Ver *ver) {
     ver->build_date[0]      = '\0';
 }
 
-Void free_ver(Ver *ver) {
-    free_mem(ver->ver_no);
-}
-
 Void ld_ver_from_file(Ver *ver, Ch *path, Err *err) {
     Ch      *file_data      = NIL;
     Ch      temp_str[20];
@@ -37,46 +33,42 @@ Void ld_ver_from_file(Ver *ver, Ch *path, Err *err) {
     // Read the .ver file
     read_file_to_str(path, &file_data, err);
     if (is_err(err))
-        goto CLEANUP;
+        return;
     
     // Use a 'ChBuf' to scan the lines of the file
     ld_ch_buf_from_str(&ch_buf, file_data);
     scan_ch_buf_until(&ch_buf, (Ch**) &ver->ver_no, '\n', err);
     if (is_err(err)) {
         THROW(err, ErrCode_DATA, "Could not parse .ver file %s", path)
-        goto CLEANUP;
+        return;
     }
     scan_ch_buf_until(&ch_buf, (Ch**) &ver->ver_date, '\n', err);
     if (is_err(err)) {
         THROW(err, ErrCode_DATA, "Could not parse .ver file %s", path)
-        goto CLEANUP;
+        return;
     }
     scan_ch_buf_until(&ch_buf, (Ch**) &temp_str, '\n', err);
     if (is_err(err)) {
         THROW(err, ErrCode_DATA, "Could not parse .ver file %s", path)
-        goto CLEANUP;
+        return;
     }
     ver->build_no = str_to_i16(temp_str, 10, err);
     if (is_err(err)) {
         THROW(err, ErrCode_DATA, "Could not parse .ver file %s", path)
-        goto CLEANUP;
+        return;
     }
     scan_ch_buf_until(&ch_buf, (Ch**)&ver->build_date, '\n', err);
     if (is_err(err)) {
         THROW(err, ErrCode_DATA, "Could not parse .ver file %s", path)
-        goto CLEANUP;
+        return;
     }
 
     // A proper .ver file ends with a single new-line character
     if (!((read_ch_buf(&ch_buf) == '\n') && 
             (peek_ch_buf(&ch_buf, NIL) == '\0'))) {
         THROW(err, ErrCode_DATA, "Could not parse .ver file %s", path)
-        goto CLEANUP;
+        return;
     }
-
-    CLEANUP:
-    if (is_err(err))
-        free_ver(ver);
 }
 
 Void set_ver_no(Ver *ver, Ch *ver_no) {
