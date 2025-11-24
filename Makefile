@@ -9,16 +9,25 @@ CC := gcc
 CC_OPTS := \
 	-Wall \
 	-Werror \
-	-fpic
+	-fpic \
+	-g
+
+CC_LIBS := \
+	-lcast \
+	-lcalen \
+	-lchbuf \
+	-lerr \
+	-lfileio \
+	-lmem
 
 # ----- REAL TARGETS -----
 
 build/lib/libver.so: build/obj/ver.o
 	@mkdir -p build/lib
-	@${CC} -shared -o $@ $<
+	@${CC} -shared -o $@ $< ${CC_LIBS}
 	@echo "Built target $@"
 
-build/obj/ver.o: ver.c ver.h
+build/obj/ver.o: ver.c ver.h Makefile
 	@mkdir -p build/obj
 	@${CC} ${CC_OPTS} -c -o $@ $<
 	@echo "Built target $@"
