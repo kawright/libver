@@ -12,7 +12,9 @@
 
 Void dflt_ver(Ver *ver) {
     strcpy(ver->ver_no, "1.0");
-    ver->build_no = 1;
+    strcpy(ver->proj_name, "[PROJECT NAME]");
+    strcpy(ver->proj_desc, "[PROJECT DESCRIPTION]");
+    ver->build_no = 0;
     touch_ver_date(ver);
     touch_ver_build_date(ver); 
 }
@@ -22,6 +24,8 @@ Void init_ver(Ver *ver) {
     ver->ver_date[0]        = '\0';
     ver->build_no           = 0;
     ver->build_date[0]      = '\0';
+    ver->proj_name[0]       = '\0';
+    ver->proj_desc[0]       = '\0';
 }
 
 Void ld_ver_from_file(Ver *ver, Ch *path, Err *err) {
@@ -37,6 +41,18 @@ Void ld_ver_from_file(Ver *ver, Ch *path, Err *err) {
     
     // Use a 'ChBuf' to scan the lines of the file
     ld_ch_buf_from_str(&ch_buf, file_data);
+    scan_ch_buf_until(&ch_buf, ver->proj_name, '\n', NIL);
+    if (is_ch_buf_end(&ch_buf)) {
+        THROW(err, ErrCode_DATA, "Could not parse .ver file %s", path)
+        return;
+    }
+    adv_ch_buf(&ch_buf, NIL);
+    scan_ch_buf_until(&ch_buf, ver->proj_desc, '\n', NIL);
+    if (is_ch_buf_end(&ch_buf)) {
+        THROW(err, ErrCode_DATA, "Could not parse .ver file %s", path)
+        return;
+    }
+    adv_ch_buf(&ch_buf, NIL);
     scan_ch_buf_until(&ch_buf, ver->ver_no, '\n', NIL);
     if (is_ch_buf_end(&ch_buf)) {
         THROW(err, ErrCode_DATA, "Could not parse .ver file %s", path)
@@ -75,6 +91,14 @@ Void ld_ver_from_file(Ver *ver, Ch *path, Err *err) {
     }
 }
 
+Void set_ver_proj_desc(Ver *ver, Ch *desc) {
+    strncpy(ver->proj_desc, desc, VER_PROJ_DESC_BUF_SZ - 1);
+}
+
+Void set_ver_proj_name(Ver *ver, Ch *name) {
+    strncpy(ver->proj_name, name, VER_PROJ_NAME_BUF_SZ - 1);
+}
+
 Void set_ver_no(Ver *ver, Ch *ver_no) {
     strncpy(ver->ver_no, ver_no, VER_NO_BUF_SZ - 1);
 }
@@ -88,6 +112,7 @@ Void touch_ver_build_date(Ver *ver) {
 }
 
 Void write_ver_to_file(Ver *ver, Ch *path, Err *err) {
-    write_fmt_to_file(path, "%s\n%s\n%d\n%s\n\n", err, ver->ver_no, 
-        ver->ver_date, ver->build_no, ver->build_date);
+    write_fmt_to_file(path, "%s\n%s\n%s\n%s\n%d\n%s\n\n", err, ver->proj_name,
+        ver->proj_desc, ver->ver_no, ver->ver_date, ver->build_no, 
+        ver->build_date);
 }
