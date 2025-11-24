@@ -84,6 +84,6 @@ Void touch_ver_build_date(Ver *ver) {
 }
 
 Void write_ver_to_file(Ver *ver, Ch *path, Err *err) {
-    write_fmt_to_file(path, "%s\n%s\n%d\n%s\n", err, ver->ver_no, ver->ver_date, 
-        ver->build_no, ver->build_date);
+    write_fmt_to_file(path, "%s\n%s\n%d\n%s\n\n", err, ver->ver_no, 
+        ver->ver_date, ver->build_no, ver->build_date);
 }
