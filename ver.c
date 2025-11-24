@@ -37,17 +37,17 @@ Void ld_ver_from_file(Ver *ver, Ch *path, Err *err) {
     
     // Use a 'ChBuf' to scan the lines of the file
     ld_ch_buf_from_str(&ch_buf, file_data);
-    scan_ch_buf_until(&ch_buf, (Ch**) &ver->ver_no, '\n', err);
+    scan_ch_buf_until(&ch_buf, ver->ver_no, '\n', err);
     if (is_err(err)) {
         THROW(err, ErrCode_DATA, "Could not parse .ver file %s", path)
         return;
     }
-    scan_ch_buf_until(&ch_buf, (Ch**) &ver->ver_date, '\n', err);
+    scan_ch_buf_until(&ch_buf, ver->ver_date, '\n', err);
     if (is_err(err)) {
         THROW(err, ErrCode_DATA, "Could not parse .ver file %s", path)
         return;
     }
-    scan_ch_buf_until(&ch_buf, (Ch**) &temp_str, '\n', err);
+    scan_ch_buf_until(&ch_buf, temp_str, '\n', err);
     if (is_err(err)) {
         THROW(err, ErrCode_DATA, "Could not parse .ver file %s", path)
         return;
@@ -57,7 +57,7 @@ Void ld_ver_from_file(Ver *ver, Ch *path, Err *err) {
         THROW(err, ErrCode_DATA, "Could not parse .ver file %s", path)
         return;
     }
-    scan_ch_buf_until(&ch_buf, (Ch**)&ver->build_date, '\n', err);
+    scan_ch_buf_until(&ch_buf, ver->build_date, '\n', err);
     if (is_err(err)) {
         THROW(err, ErrCode_DATA, "Could not parse .ver file %s", path)
         return;
